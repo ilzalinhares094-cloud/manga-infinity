@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, Dices, Hexagon, Infinity as InfinityIcon, Home as HomeIcon, LayoutGrid, Library, UserCircle, X, Trophy } from 'lucide-react';
+import { 
+  Search, Bell, Dices, Hexagon, Infinity as InfinityIcon, 
+  Home as HomeIcon, LayoutGrid, Library, UserCircle, X, Trophy 
+} from 'lucide-react';
+
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, collection, onSnapshot, query, getDocs, updateDoc, increment } from "firebase/firestore";
 
-// 1. IMPORTANDO O FIREBASE (da pasta services)
+// Conexão e Utilitários
 import { app, auth, db } from './services/firebase';
-
-// 2. IMPORTANDO UTILITÁRIOS (da pasta utils)
 import { APP_ID, FALLBACK_SHOP_ITEMS } from './utils/constants';
 import { getThemeClasses, removeXpLogic, addXpLogic, timeAgo } from './utils/helpers';
 
-// 3. IMPORTANDO COMPONENTES GLOBAIS (da pasta components)
+// Componentes Globais (Com chaves)
 import { ErrorBoundary, GlobalToast, Footer, SplashScreen } from './components/UIComponents';
 
-// 4. IMPORTANDO AS PÁGINAS (da pasta pages)
-import LoginView from './pages/LoginView';
-import HomeView from './pages/HomeView';
-import CatalogView from './pages/CatalogView';
-import LibraryView from './pages/LibraryView';
-import NexoView from './pages/NexoView';
-import ProfileView from './pages/ProfileView';
+// PÁGINAS (Agora COM chaves, para combinar com o "export function")
+import { LoginView } from './pages/LoginView';
+import { HomeView } from './pages/HomeView';
+import { SearchView } from './pages/SearchView';
+import { CatalogView } from './pages/CatalogView';
+import { LibraryView } from './pages/LibraryView';
+import { NexoView } from './pages/NexoView';
+import { ProfileView } from './pages/ProfileView';
+import { DetailsView } from './pages/DetailsView';
+import { ReaderView } from './pages/ReaderView';
 
 // Se você copiou do meu código anterior, algumas estavam como export function:
 import { SearchView } from './pages/SearchView';
