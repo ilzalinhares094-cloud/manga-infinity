@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Search, Bell, Dices, Hexagon, Infinity as InfinityIcon, 
-  Home as HomeIcon, LayoutGrid, Library, UserCircle, X, Trophy 
+  Home as HomeIcon, LayoutGrid, Library, UserCircle, User, X, Trophy 
 } from 'lucide-react';
 
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc, collection, onSnapshot, query, getDocs, updateDoc, increment } from "firebase/firestore";
+import { 
+  doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, 
+  query, getDocs, updateDoc, increment 
+} from "firebase/firestore";
 
-// Conexão e Utilitários
+// Imports de configuração
 import { app, auth, db } from './services/firebase';
 import { APP_ID, FALLBACK_SHOP_ITEMS } from './utils/constants';
 import { getThemeClasses, removeXpLogic, addXpLogic, timeAgo } from './utils/helpers';
 
-// Componentes Globais (Com chaves)
+// Componentes UI
 import { ErrorBoundary, GlobalToast, Footer, SplashScreen } from './components/UIComponents';
 
-// PÁGINAS (Agora COM chaves, para combinar com o "export function")
+// IMPORTAÇÕES DAS PÁGINAS (Com chaves para os que não são "export default")
 import { LoginView } from './pages/LoginView';
 import { HomeView } from './pages/HomeView';
 import { SearchView } from './pages/SearchView';
@@ -23,13 +26,10 @@ import { CatalogView } from './pages/CatalogView';
 import { LibraryView } from './pages/LibraryView';
 import { NexoView } from './pages/NexoView';
 import { ProfileView } from './pages/ProfileView';
-import { DetailsView } from './pages/DetailsView';
-import { ReaderView } from './pages/ReaderView';
 
-// Se você copiou do meu código anterior, algumas estavam como export function:
-import { SearchView } from './pages/SearchView';
-import { DetailsView } from './pages/DetailsView';
-import { ReaderView } from './pages/ReaderView';
+// ATENÇÃO: DetailsView e ReaderView agora usam "export default", então a importação é SEM chaves:
+import DetailsView from './pages/DetailsView';
+import ReaderView from './pages/ReaderView';
 
 function MangaInfinityApp() {
   const [splashTimerDone, setSplashTimerDone] = useState(false);
@@ -174,6 +174,27 @@ function MangaInfinityApp() {
     }, 5000);
     return () => clearInterval(interval);
   }, [user, userProfileData.activeMission]);
+
+  useEffect(() => {
+      const completeSearchLocalMission = async () => {
+          if (!user || !userProfileData?.activeMission) return;
+          const m = userProfileData.activeMission;
+          const profileRef = doc(db, 'artifacts', APP_ID, 'users', user.uid, 'profile', 'main');
+          
+          let { newXp, newLvl, didLevelUp } = addXpLogic(userProfileData.xp || 0, userProfileData.level || 1, m.rewardXp);
+          let newCoins = (userProfileData.coins || 0) + m.rewardCoins;
+          let currentCompleted = userProfileData.completedMissions || [];
+          if (!currentCompleted.includes("enigma_local_" + m.targetManga)) currentCompleted = [...currentCompleted, "enigma_local_" + m.targetManga];
+
+          await updateDoc(profileRef, { coins: newCoins, xp: newXp, level: newLvl, activeMission: null, completedMissions: currentCompleted });
+          showToast(`Alvo Encontrado! Missão Concluída: +${m.rewardXp} XP | +${m.rewardCoins} M`, "success");
+          if(didLevelUp) handleLevelUpAnim(newLvl);
+      };
+
+      if (currentView === 'details' && selectedManga && userProfileData?.activeMission?.type === 'search_local') {
+          if (userProfileData.activeMission.targetManga === selectedManga.id) { completeSearchLocalMission(); }
+      }
+  }, [currentView, selectedManga, userProfileData?.activeMission, user]);
 
   const showSplash = !splashTimerDone || !authReady || loadingMangas;
 
