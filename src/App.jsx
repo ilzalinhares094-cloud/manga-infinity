@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from 'react';
+
+// 1. Ícones (Adicionado o 'User' que você identificou)
 import { 
   Search, Bell, Dices, Hexagon, Infinity as InfinityIcon, 
-  Home as HomeIcon, LayoutGrid, Library, UserCircle, X, Trophy 
+  Home as HomeIcon, LayoutGrid, Library, UserCircle, User, X, Trophy 
 } from 'lucide-react';
 
+// 2. Firebase Auth
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc, collection, onSnapshot, query, getDocs, updateDoc, increment } from "firebase/firestore";
+
+// 3. Firebase Firestore (Adicionados 'getDoc' e 'deleteDoc' que você identificou)
+import { 
+  doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, 
+  query, getDocs, updateDoc, increment 
+} from "firebase/firestore";
 
 // Conexão e Utilitários
 import { app, auth, db } from './services/firebase';
 import { APP_ID, FALLBACK_SHOP_ITEMS } from './utils/constants';
 import { getThemeClasses, removeXpLogic, addXpLogic, timeAgo } from './utils/helpers';
 
-// Componentes Globais (Com chaves)
+// Componentes Globais
 import { ErrorBoundary, GlobalToast, Footer, SplashScreen } from './components/UIComponents';
 
-// PÁGINAS (Agora COM chaves, para combinar com o "export function")
+// Páginas 
 import { LoginView } from './pages/LoginView';
 import { HomeView } from './pages/HomeView';
 import { SearchView } from './pages/SearchView';
