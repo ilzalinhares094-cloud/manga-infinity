@@ -1,38 +1,26 @@
 import React, { useState, useEffect } from 'react';
-
-// 1. Ícones (Adicionado o 'User' que você identificou)
-import { 
-  Search, Bell, Dices, Hexagon, Infinity as InfinityIcon, 
-  Home as HomeIcon, LayoutGrid, Library, UserCircle, User, X, Trophy 
-} from 'lucide-react';
-
-// 2. Firebase Auth
+import { Search, Bell, Dices, Hexagon, Infinity as InfinityIcon, Home as HomeIcon, LayoutGrid, Library, UserCircle, X, Trophy } from 'lucide-react';
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, collection, onSnapshot, query, getDocs, updateDoc, increment } from "firebase/firestore";
 
-// 3. Firebase Firestore (Adicionados 'getDoc' e 'deleteDoc' que você identificou)
-import { 
-  doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, 
-  query, getDocs, updateDoc, increment 
-} from "firebase/firestore";
-
-// Conexão e Utilitários
+// 1. IMPORTANDO O FIREBASE (da pasta services)
 import { app, auth, db } from './services/firebase';
+
+// 2. IMPORTANDO UTILITÁRIOS (da pasta utils)
 import { APP_ID, FALLBACK_SHOP_ITEMS } from './utils/constants';
 import { getThemeClasses, removeXpLogic, addXpLogic, timeAgo } from './utils/helpers';
 
-// Componentes Globais
+// 3. IMPORTANDO COMPONENTES GLOBAIS (da pasta components)
 import { ErrorBoundary, GlobalToast, Footer, SplashScreen } from './components/UIComponents';
 
-// Páginas 
-import { LoginView } from './pages/LoginView';
-import { HomeView } from './pages/HomeView';
-import { SearchView } from './pages/SearchView';
-import { CatalogView } from './pages/CatalogView';
-import { LibraryView } from './pages/LibraryView';
-import { NexoView } from './pages/NexoView';
-import { ProfileView } from './pages/ProfileView';
-import { DetailsView } from './pages/DetailsView';
-import { ReaderView } from './pages/ReaderView';
+// 4. IMPORTANDO AS PÁGINAS (da pasta pages)
+import LoginView from './pages/LoginView';
+import HomeView from './pages/HomeView';
+import CatalogView from './pages/CatalogView';
+import LibraryView from './pages/LibraryView';
+import NexoView from './pages/NexoView';
+import ProfileView from './pages/ProfileView';
+
 // Se você copiou do meu código anterior, algumas estavam como export function:
 import { SearchView } from './pages/SearchView';
 import { DetailsView } from './pages/DetailsView';
